@@ -13,34 +13,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
     
-    var myBalloons: [Balloon] = []
+    var balloons: [Balloon] = []
     var currentIndex = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        imageView.image = UIImage(named: "BerlinTVTower.jpg")
-        textLabel.text = "0 Balloons"
-        
-        var firstBalloon = Balloon()
-        firstBalloon.number = 1
-        firstBalloon.image = UIImage(named: "RedBalloon1.jpg")
-        
-        var secondBalloon = Balloon()
-        secondBalloon.number = 2
-        secondBalloon.image = UIImage(named: "RedBalloon2.jpg")
-        
-        var thirdBalloon = Balloon()
-        thirdBalloon.number = 3
-        thirdBalloon.image = UIImage(named: "RedBalloon3.jpg")
-        
-        var fourthBalloon = Balloon()
-        fourthBalloon.number = 4
-        fourthBalloon.image = UIImage(named: "RedBalloon4.jpg")
-        
-        myBalloons += [firstBalloon, secondBalloon, thirdBalloon, fourthBalloon]
-        
+        self.createBalloons()
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,24 +28,38 @@ class ViewController: UIViewController {
     }
 
     @IBAction func nextBarButtonPressed(sender: UIBarButtonItem) {
-        var randomIndex: Int
         
-        do {
-            randomIndex = Int(arc4random_uniform(UInt32(4)))
-        } while currentIndex == randomIndex
-        
-        currentIndex = randomIndex
-        
-        let balloon = myBalloons[randomIndex]
+        let balloon = balloons[currentIndex]
         
         UIView.transitionWithView(self.view, duration: 2, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: {
                 self.imageView.image = balloon.image
-                self.textLabel.text = balloon.createBalloonString()
+                self.textLabel.text = "\(balloon.number) Balloons"
             }, completion: {
                 (finished: Bool) -> () in
         })
         
+        currentIndex += 1
     }
 
+    func createBalloons() {
+        for var balloonCount = 0; balloonCount <= 99; balloonCount++ {
+            var balloon = Balloon()
+            balloon.number = balloonCount
+            
+            let randomIndex = Int(arc4random_uniform(UInt32(4)))
+            
+            switch randomIndex {
+            case 1:
+                balloon.image = UIImage(named: "RedBalloon1.jpg")
+            case 2:
+                balloon.image = UIImage(named: "RedBalloon2.jpg")
+            case 3:
+                balloon.image = UIImage(named: "RedBalloon3.jpg")
+            default:
+                balloon.image = UIImage(named: "RedBalloon4.jpg")
+            }
+            self.balloons.append(balloon)
+        }
+    }
 }
 
